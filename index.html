@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quem está assistindo?</title>
+  <!-- Importa a fonte Bebas Neue -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"> <!-- Link para o CSS -->
+</head>
+<body>
+
+  <!-- Logo com efeito 3D concavo via SVG -->
+  <div class="logo-container">
+    <svg viewBox="0 0 800 200" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <!-- Filtro para simular um efeito de "entranhamento" (inset/concavo) -->
+        <filter id="concave">
+          <!-- Borrão para suavizar os contornos -->
+          <feGaussianBlur in="SourceAlpha" stdDeviation="3" result="blur" />
+          <!-- Desloca a imagem borrada -->
+          <feOffset in="blur" dx="2" dy="2" result="offsetBlur" />
+          <!-- Cria o efeito de sombra interna -->
+          <feComposite in="SourceAlpha" in2="offsetBlur" operator="arithmetic"
+                       k2="-1" k3="1" result="innerShadow" />
+          <!-- Combina com o original -->
+          <feComposite in="SourceGraphic" in2="innerShadow" operator="arithmetic"
+                       k2="1" k3="0" />
+        </filter>
+      </defs>
+      <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle"
+            font-family="'Bebas Neue', sans-serif" font-size="100" fill="#E50914"
+            filter="url(#concave)">
+        ARIELFLIX
+      </text>
+    </svg>
+  </div>
+
+  <!-- Container dos perfis -->
+  <div class="container">
+    <!-- Perfis com carinhas coloridas -->
+    <div class="profile">
+      <div class="icon" style="color: #2196F3;">😊</div>
+      <h3>Aline</h3>
+    </div>
+    <div class="profile">
+      <div class="icon" style="color: #FFEB3B;">😁</div>
+      <h3>Pedrinho</h3>
+    </div>
+    <div class="profile">
+      <div class="icon" style="color: #F44336;">😎</div>
+      <h3>Julia</h3>
+    </div>
+    <!-- Botão para adicionar perfil -->
+    <div class="profile add-profile" onclick="addProfile()">
+      <span>+</span>
+    </div>
+  </div>
+
+  <!-- Botão de Gerenciar Perfis -->
+  <button class="manage-button">Gerenciar Perfis</button>
+
+  <script src="script.js"></script> <!-- Link para o JS -->
+</body>
+</html>
