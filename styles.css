@@ -139,3 +139,25 @@ svg {
     height: 160px;
   }
 }
+/* Ajustes para telas menores */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: row; /* Alinha os itens em coluna */
+    flex-wrap: wrap; /* Permite quebrar para a linha seguinte */
+    justify-content: center; /* Centraliza os itens */
+  }
+
+    .profile {
+    width: 45%; /* Cada perfil vai ocupar 45% da largura da tela */
+    height: 120px; /* Mantém a altura do perfil */
+    margin-bottom: 20px; /* Adiciona espaço entre os perfis */
+  }
+  
+  /* Adicionando um espaçamento para os perfis da segunda linha */
+  .container .profile:nth-child(3), .container .profile:nth-child(4) {
+    margin-top: 0px; /* Ajusta a distância entre os perfis da primeira e segunda linha */
+
+  .profile h3 {
+    position: relative; /* Faz o nome ficar abaixo do quadrado */
+    bottom: 0;
+  }
