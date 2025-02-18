@@ -1,9 +1,11 @@
+/* Reset básico */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
+/* Corpo da página */
 body {
   background-color: #000;
   color: white;
@@ -24,6 +26,23 @@ svg {
   height: auto;
 }
 
+.logo-container svg text {
+  font-size: 10vw; /* Escala com a largura da tela */
+}
+
+/* Define um mínimo e máximo para o tamanho do texto */
+@media (max-width: 500px) {
+  .logo-container svg text {
+    font-size: 150px; /* Tamanho mínimo */
+  }
+}
+
+@media (min-width: 1200px) {
+  .logo-container svg text {
+    font-size: 100px; /* Tamanho máximo */
+  }
+}
+
 /* Container dos perfis */
 .container {
   display: flex;
@@ -40,6 +59,7 @@ svg {
   border-radius: 10px;
   width: 120px;
   height: 120px;
+  min-height: 140px; /* Ajusta a altura mínima */
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,11 +67,21 @@ svg {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   flex-direction: column;
   position: relative;
+  min-width: 140px; /* Garantir que o quadrado seja maior que o emoji */
+  max-width: 160px; /* Limita o tamanho máximo do quadrado */
+  max-height: 160px; /* Limita o tamanho máximo do quadrado */
 }
 
-/* Ícone do perfil */
+
+/* Ícone do perfil (emoji) */
 .profile .icon {
-  font-size: 60px;
+  font-size: 50px;  /* Tamanho fixo do emoji para garantir que não ultrapasse os limites */
+  width: 70%;       /* O emoji ocupa até 70% da largura do quadrado */
+  height: 70%;      /* O emoji ocupa até 70% da altura do quadrado */
+  max-width: 60px;  /* Garante que o emoji nunca ultrapasse 60px de largura */
+  max-height: 60px; /* Garante que o emoji nunca ultrapasse 60px de altura */
+  width: auto;      /* Permite que o emoji seja redimensionado proporcionalmente */
+  height: auto;     /* Permite que o emoji seja redimensionado proporcionalmente */
 }
 
 /* Nome abaixo do quadrado */
@@ -60,7 +90,7 @@ svg {
   font-size: 16px;
   color: white;
   position: absolute;
-  bottom: -30px;
+  bottom: -30px; /* Mantém o valor como -3px */
   width: 100%;
   text-align: center;
   transition: transform 0.3s ease, text-shadow 0.3s ease;
@@ -68,8 +98,8 @@ svg {
 
 /* Efeito de 3D e brilho branco no nome ao passar o mouse */
 .profile:hover h3 {
-  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6); /* Brilho branco */
-  transform: translateY(-5px); /* Move o nome para frente (efeito 3D) */
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6);
+  transform: translateY(-5px);
 }
 
 /* Adicionar Perfil (quadrado) */
@@ -139,25 +169,45 @@ svg {
     height: 160px;
   }
 }
-/* Ajustes para telas menores */
+
 @media (max-width: 768px) {
   .container {
-    flex-direction: row; /* Alinha os itens em coluna */
-    flex-wrap: wrap; /* Permite quebrar para a linha seguinte */
-    justify-content: center; /* Centraliza os itens */
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
-    .profile {
-    width: 45%; /* Cada perfil vai ocupar 45% da largura da tela */
-    height: 120px; /* Mantém a altura do perfil */
-    margin-bottom: 20px; /* Adiciona espaço entre os perfis */
+  .profile {
+    width: 45%;
+    height: 120px;
+    margin-bottom: 20px;
   }
   
-  /* Adicionando um espaçamento para os perfis da segunda linha */
-  .container .profile:nth-child(3), .container .profile:nth-child(4) {
-    margin-top: 0px; /* Ajusta a distância entre os perfis da primeira e segunda linha */
-
   .profile h3 {
-    position: relative; /* Faz o nome ficar abaixo do quadrado */
+    position: relative;
     bottom: 0;
   }
+
+  /* Responsividade para imagens */
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Logo (SVG) já responsivo */
+  svg {
+    width: 100%;
+    height: auto;
+  }
+}
+/* Responsividade para telas menores que 780px */
+@media (max-width: 780px) {
+  .profile {
+    width: 120px;
+    height: 140px;  /* Aumenta a altura do quadrado */
+  }
+
+  .profile h3 {
+    bottom: -55px;  /* Ajusta a posição do nome para não ficar dentro do quadrado */
+  }
+}
