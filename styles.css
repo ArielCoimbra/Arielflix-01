@@ -1,4 +1,3 @@
-/* Reset básico */
 * {
   margin: 0;
   padding: 0;
@@ -13,7 +12,7 @@ body {
   padding: 20px;
 }
 
-/* Container para o logo */
+/* Logo */
 .logo-container {
   width: 100%;
   max-width: 800px;
@@ -25,7 +24,7 @@ svg {
   height: auto;
 }
 
-/* Estilos dos perfis */
+/* Container dos perfis */
 .container {
   display: flex;
   flex-wrap: wrap;
@@ -34,53 +33,74 @@ svg {
   margin-top: 30px;
 }
 
+/* Perfil (quadrado) */
 .profile {
   background: #111;
-  padding: 10px;
+  padding: 20px;
   border-radius: 10px;
   width: 120px;
-  text-align: center;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  flex-direction: column;
+  position: relative;
 }
 
-.profile:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
-}
-
+/* Ícone do perfil */
 .profile .icon {
   font-size: 60px;
-  margin-bottom: 10px;
 }
 
+/* Nome abaixo do quadrado */
 .profile h3 {
-  font-size: 14px;
-  color: #ccc;
   margin-top: 10px;
+  font-size: 16px;
+  color: white;
+  position: absolute;
+  bottom: -30px;
+  width: 100%;
+  text-align: center;
+  transition: transform 0.3s ease, text-shadow 0.3s ease;
 }
 
+/* Efeito de 3D e brilho branco no nome ao passar o mouse */
+.profile:hover h3 {
+  text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6); /* Brilho branco */
+  transform: translateY(-5px); /* Move o nome para frente (efeito 3D) */
+}
+
+/* Adicionar Perfil (quadrado) */
 .add-profile {
   background: #222;
   display: flex;
   align-items: center;
   justify-content: center;
   height: 100px;
+  width: 100px;
   border-radius: 10px;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.add-profile:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
-}
-
+/* Símbolo '+' com borda em volta */
 .add-profile span {
   font-size: 40px;
-  color: #555;
+  color: white;
+  background-color: #111;
+  border: 2px solid white;
+  border-radius: 50%;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
 }
 
+/* Botão Gerenciar Perfis */
 .manage-button {
   background: transparent;
   border: 1px solid white;
@@ -89,7 +109,7 @@ svg {
   font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
-  margin-top: 30px;
+  margin-top: 50px;
   transition: background-color 0.3s, color 0.3s, transform 0.3s;
 }
 
@@ -99,15 +119,23 @@ svg {
   transform: scale(1.1);
 }
 
-/* Responsividade Mobile First */
+/* Selecionado */
+.selected {
+  border: 2px solid white;
+  box-shadow: 0 0 10px rgba(229, 9, 20, 0.6);
+}
+
+/* Responsividade */
 @media (min-width: 768px) {
   .profile {
     width: 140px;
+    height: 140px;
   }
 }
 
 @media (min-width: 1024px) {
   .profile {
     width: 160px;
+    height: 160px;
   }
 }
