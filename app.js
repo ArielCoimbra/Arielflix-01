@@ -60,7 +60,7 @@ function configurarEventosInterface() {
     });
 }
 
-// Exibição de Estruturas Fantasmas (Skeletons Screens)
+// Melhoria 9: Exibição de Estruturas Fantasmas (Skeletons Screens)
 function exibirSkeletonsIniciais() {
     const container = document.getElementById('lista-carros');
     let htmlSkeleton = '';
@@ -69,7 +69,7 @@ function exibirSkeletonsIniciais() {
             <div class="col">
                 <div class="card border-0 bg-white p-2 rounded-4 shadow-sm" style="height: 260px;">
                     <div class="skeleton skeleton-img mb-2"></div>
-                    <div class="skeleton skeleton-text mb-2"></div>
+                    <div class="skeleton skeleton-text"></div>
                     <div class="skeleton skeleton-text short"></div>
                 </div>
             </div>
@@ -78,7 +78,7 @@ function exibirSkeletonsIniciais() {
     container.innerHTML = htmlSkeleton;
 }
 
-// Mecanismo de Cache de 5 Minutos em Armazenamento Local
+// Melhoria 6: Mecanismo de Cache de 5 Minutos em Armazenamento Local
 async function carregarEstoqueComCache() {
     const CHAVE_CACHE = 'estoque_unidas_data';
     const CHAVE_TEMPO = 'estoque_unidas_timestamp';
@@ -112,7 +112,7 @@ async function carregarEstoqueComCache() {
     }
 }
 
-// Parser Robusto de Dados usando Engine PapaParse
+// Melhoria 10: Parser Robusto de Dados usando Engine PapaParse
 function parsearDadosPlanilha(textoCsv) {
     Papa.parse(textoCsv, {
         skipEmptyLines: true,
@@ -120,7 +120,7 @@ function parsearDadosPlanilha(textoCsv) {
             const linhas = resultados.data;
             if (linhas.length === 0) return;
 
-            // Extração de metadados administrativos e criptografia preventiva da senha
+            // Extração de metadados administrativos e criptografia preventiva da senha (Melhoria 7)
             if (linhas.length > 2 && linhas[2][11]) {
                 const senhaLimpa = linhas[2][11].trim();
                 hashSenhaMestre = CryptoJS.SHA256(senhaLimpa).toString();
@@ -157,7 +157,7 @@ function parsearDadosPlanilha(textoCsv) {
                     cor: linha[2] || 'N/I',
                     km: formatarKM(linha[3]),
                     fipe: linha[4] || 'N/A',
-                    valor: inline[5] || 'N/A', // Nota: No original enviado constava "linha[5]" no local correspondente, preservado o padrão lógico de linha[5]
+                    valor: linha[5] || 'N/A',
                     valorNumerico: converterPrecoParaNumero(linha[5]),
                     margem: linha[6] || 'N/I',
                     status: txtStatusH,
@@ -168,9 +168,6 @@ function parsearDadosPlanilha(textoCsv) {
                     novidade: ehNovidade,
                     baixouPreco: ehBaixou
                 };
-
-                // Ajuste pontual do mapeamento de propriedades da linha
-                carro.valor = linha[5] || 'N/A';
 
                 if (carro.status.includes('vendido')) {
                     vendidos.push(carro);
@@ -238,7 +235,7 @@ function montarFaixaLetreiro(listaNovidades) {
     divFaixa.style.display = 'block';
 }
 
-// Regras de Negócio, Filtro Avançado por Preço e Ordenação Especial
+// Regras de Negócio, Filtro Avançado por Preço (Melhoria 8) e Ordenação Especial
 function processarEstoque() {
     let filtrados = [...todosOsCarros];
 
@@ -251,7 +248,7 @@ function processarEstoque() {
         filtrados = filtrados.filter(c => c.carroceria === categoriaAtiva);
     }
 
-    // Filtro Avançado por Faixa de Preço
+    // Filtro Avançado por Faixa de Preço (Melhoria 8)
     if (filtroPrecoAtivo === 'ate-50k') {
         filtrados = filtrados.filter(c => c.valorNumerico > 0 && c.valorNumerico <= 50000);
     } else if (filtroPrecoAtivo === '50k-80k') {
@@ -276,16 +273,16 @@ function processarEstoque() {
 
     listaFiltradaGlobal = filtrados;
     
-    // Atualização Dinâmica do Contador de Veículos
+    // Atualização Dinâmica do Contador de Veículos (Gatilhamento Mental - Melhoria 2 do usuário)
     document.getElementById('contador-veiculos').innerText = `${listaFiltradaGlobal.length} veículos encontrados`;
 
-    // Reseta Paginação para renderizar o primeiro lote limpo
+    // Reseta Paginação para renderizar o primeiro lote limpo (Melhoria 4)
     itensExibidosAtualmente = 0;
     document.getElementById('lista-carros').innerHTML = '';
     renderizarProximoBloco();
 }
 
-// Implementação Mecânica de Infinite Scroll (Carregamento sob Demanda)
+// Melhoria 4: Implementação Mecânica de Infinite Scroll (Carregamento sob Demanda)
 function renderizarProximoBloco() {
     if (itensExibidosAtualmente >= listaFiltradaGlobal.length) return;
 
@@ -298,7 +295,7 @@ function renderizarProximoBloco() {
         const classeStatus = esVendido ? 'tag-status-vendido' : 'tag-status-disponivel';
         const textoStatus = esVendido ? 'RESERVADO' : 'DISPONÍVEL';
         
-        // Lazy Loading Nativo de Imagens nas Linhas de Cards
+        // Melhoria 3: Lazy Loading Nativo de Imagens nas Linhas de Cards
         const fotoUrl = carro.fotoCapa.startsWith('http') ? converterLinkDrive(carro.fotoCapa) : 'https://placehold.co/600x400/0f172a/ffffff?text=ARIEL_UNIDAS';
         
         const badgeNovidade = (carro.novidade && !esVendido) ? `<span class="tag-feature tag-feature-novidade">✨ NOVIDADE</span>` : '';
@@ -335,7 +332,7 @@ function renderizarProximoBloco() {
     itensExibidosAtualmente = limite;
 }
 
-// Tratamento de Fallback de Imagem Corrompida ou Quebrada
+// Melhoria 2: Tratamento de Fallback de Imagem Corrompida ou Quebrada
 function tratarImagemQuebrada(imagemElemento) {
     imagemElemento.onerror = null; 
     imagemElemento.src = 'https://placehold.co/600x400/090d16/ffffff?text=Imagem+em+Atualização';
@@ -382,7 +379,7 @@ function abrirModalDetalhesDirect(idCarro) {
         `;
     });
 
-    // Compartilhamento Nativo Inteligente de Links e Textos (WhatsApp/Redes)
+    // Melhoria 5: Compartilhamento Nativo Inteligente de Links e Textos (WhatsApp/Redes)
     document.getElementById('btn-compartilhar-nativo').onclick = function() {
         const payloadTexto = `🔥 Ficha de Repasse: *${carro.modelo}*\n💰 Valor de Lote: ${carro.valor}\n📈 Tabela FIPE: ${carro.fipe}\n🎨 Cor: ${carro.cor} | 🧭 KM: ${carro.km}\n\nConfira as imagens direto no catálogo completo!`;
         if (navigator.share) {
@@ -405,7 +402,7 @@ function abrirModalDetalhesDirect(idCarro) {
     new bootstrap.Modal(document.getElementById('modalDetalhes')).show();
 }
 
-// Proteção Estrita contra Engenharia Reversa (Criptografia SHA256 da Senha)
+// Melhoria 7: Proteção Estrita contra Engenharia Reversa (Criptografia SHA256 da Senha)
 function abrirModalLoja() {
     document.getElementById('input-loja-senha').value = '';
     document.getElementById('input-loja-placa').value = '';
@@ -468,7 +465,7 @@ function fecharLojaEVerCarroDireto(idCarro) {
     document.getElementById('modalPlaca').innerHTML = `<span class="badge bg-warning text-dark px-2 py-1 fw-bold">${carro.placaReal}</span>`;
 }
 
-// Função para Abrir o Modal de Endereço
+// Função Profissional para Abrir o Modal de Endereço
 function abrirModalEndereco() {
     const modalElemento = document.getElementById('modalEndereco');
     if (modalElemento) {
