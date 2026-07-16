@@ -306,6 +306,22 @@ body {
     top: 34px; 
 }
 
+/* BADGE EXCLUSIVO DO LAUDO CAUTELAR */
+.tag-feature-laudo {
+    background: #1e3a8a; /* Azul escuro corporativo */
+    top: 58px; /* Fica abaixo do badge 'baixou' se houver */
+}
+
+@media (max-width: 767px) {
+    .tag-feature-laudo {
+        top: 34px; /* Fica alinhado caso não tenha tantos badges no mobile */
+    }
+    /* Se tiver novidade E baixou no mobile, ajustamos para não sobrepor */
+    .tag-feature-baixou {
+        top: 34px;
+    }
+}
+
 .card-vehicle-body {
     padding: 0.9rem;
     display: flex;
