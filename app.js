@@ -117,28 +117,28 @@ function parsearDadosPlanilha(textoCsv) {
     Papa.parse(textoCsv, {
         skipEmptyLines: true,
         complete: function(resultados) {
-            const linhas = resultados.data;
-            if (linhas.length === 0) return;
+            const lines = resultados.data;
+            if (lines.length === 0) return;
 
             // Extração de metadados administrativos e criptografia preventiva da senha (Melhoria 7)
-            if (linhas.length > 2 && linhas[2][11]) {
-                const senhaLimpa = linhas[2][11].trim();
+            if (lines.length > 2 && lines[2][11]) {
+                const senhaLimpa = lines[2][11].trim();
                 hashSenhaMestre = CryptoJS.SHA256(senhaLimpa).toString();
             }
 
-            let fraseDestaque = (linhas[0] && linhas[0][11]) ? linhas[0][11].trim() : "";
-            let linkGrupoWpp = (linhas[1] && linhas[1][11]) ? linhas[1][11].trim() : "";
+            let fraseDestaque = (lines[0] && lines[0][11]) ? lines[0][11].trim() : "";
+            let linkGrupoWpp = (lines[1] && lines[1][11]) ? lines[1][11].trim() : "";
 
             gerenciarBannerDestaque(fraseDestaque, linkGrupoWpp);
 
             // Descarte da linha de cabeçalho da tabela
-            linhas.shift();
+            lines.shift();
 
             let disponiveis = [];
             let vendidos = [];
             let novidadesParaLetreiro = [];
 
-            linhas.forEach((linha, index) => {
+            lines.forEach((linha, index) => {
                 if (linha.length < 2 || !linha[1] || linha[1].trim() === "") return;
 
                 const txtStatusH = linha[7] ? linha[7].toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : 'disponivel';
