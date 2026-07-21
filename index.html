@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Avaliação e Checklist Veicular</title>
+  <title>Sistema Dinâmico de Avaliação Veicular</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- jsPDF e AutoTable para PDF profissional do zero -->
+  <!-- jsPDF e AutoTable -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
@@ -100,37 +100,54 @@
       </div>
     </section>
 
-    <!-- 2. Checklist de Testes Funcionais & Estrutura -->
+    <!-- 2. Checklist de Testes Funcionais & Estrutura (Com opção de Foto Dinâmica) -->
     <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
       <h2 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-4 flex items-center gap-2">
         <span class="bg-blue-500/20 text-blue-400 w-5 h-5 rounded-full flex items-center justify-center text-[10px]">2</span>
         Status dos Itens e Acessórios
       </h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="checklist-container">
+      <div class="space-y-3" id="checklist-container">
         <!-- Itens injetados via JS -->
       </div>
     </section>
 
-    <!-- 3. Fotos Guiadas Obrigatórias -->
+    <!-- 3. Fotos Guiadas Padrão -->
     <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
       <div class="flex justify-between items-center mb-4">
         <h2 class="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center gap-2">
           <span class="bg-blue-500/20 text-blue-400 w-5 h-5 rounded-full flex items-center justify-center text-[10px]">3</span>
-          Registros Fotográficos Obrigatórios
+          Registros Fotográficos Principais
         </h2>
-        <span class="text-[11px] text-slate-500">Toque nos quadros para ativar a câmera</span>
+        <span class="text-[11px] text-slate-500">Toque para ativar a câmera</span>
       </div>
 
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" id="grid-fotos">
-        <!-- Slots de fotos padronizados -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3" id="grid-fotos-padrao">
+        <!-- Slots de fotos padrão criados via JS -->
       </div>
     </section>
 
-    <!-- 4. Resumo e Parecer do Avaliador -->
+    <!-- 4. Fotos Adicionais Ilimitadas -->
+    <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xs font-bold text-blue-400 uppercase tracking-wider flex items-center gap-2">
+          <span class="bg-blue-500/20 text-blue-400 w-5 h-5 rounded-full flex items-center justify-center text-[10px]">4</span>
+          Fotos Adicionais / Avarias Extras
+        </h2>
+        <button type="button" onclick="adicionarFotoExtra()" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow transition flex items-center gap-1">
+          <span>+ Tirar Outra Foto</span>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="container-fotos-extras">
+        <!-- Fotos adicionais aparecem aqui -->
+      </div>
+    </section>
+
+    <!-- 5. Resumo e Parecer do Avaliador -->
     <section class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl">
       <h2 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-4 flex items-center gap-2">
-        <span class="bg-blue-500/20 text-blue-400 w-5 h-5 rounded-full flex items-center justify-center text-[10px]">4</span>
+        <span class="bg-blue-500/20 text-blue-400 w-5 h-5 rounded-full flex items-center justify-center text-[10px]">5</span>
         Parecer Geral de Avaliação
       </h2>
 
@@ -166,8 +183,8 @@
   </div>
 
   <script>
-    // Mapeamento dos itens de fotos idênticos ao padrão do laudo modelo
-    const fotosRequeridas = [
+    // Lista de Fotos Padrão Requeridas
+    const fotosPadrao = [
       { id: 'f_frente', label: 'Frente 90°' },
       { id: 'f_tras', label: 'Traseira 90°' },
       { id: 'f_lat_dir', label: 'Lat. Direita 90°' },
@@ -175,14 +192,10 @@
       { id: 'f_km', label: 'Painel / Odômetro (Ligado)' },
       { id: 'f_motor', label: 'Compartimento Motor' },
       { id: 'f_chassi', label: 'Gravação do Chassi' },
-      { id: 'f_vidros', label: 'Gravação de Vidros' },
-      { id: 'f_long_diant', label: 'Longarinas Dianteiras' },
-      { id: 'f_long_tras', label: 'Longarinas Traseiras' },
-      { id: 'f_torre', label: 'Torres Amortecedor' },
-      { id: 'f_pneus', label: 'Pneus / Banda de Rodagem' }
+      { id: 'f_vidros', label: 'Gravação de Vidros' }
     ];
 
-    // Checklist do Relatório
+    // Lista de Itens do Checklist
     const itensChecklist = [
       'Funcionamento do Motor e Câmbio',
       'Painel de Instrumentos / Odômetro',
@@ -194,66 +207,106 @@
       'Estética / Pintura / Funilaria'
     ];
 
-    const dadosFotos = {};
+    const dadosFotosPadrao = {};
     const dadosChecklist = {};
+    const fotosExtrasArray = [];
 
     // Renderizar Checklist
     const checklistContainer = document.getElementById('checklist-container');
-    itensChecklist.forEach(item => {
-      dadosChecklist[item] = 'CONFORME';
+    itensChecklist.forEach((item, index) => {
+      const itemId = `item_ck_${index}`;
+      dadosChecklist[itemId] = { nome: item, status: 'CONFORME', obs: '', foto: null };
       
       const div = document.createElement('div');
-      div.className = 'flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800/80 gap-2';
+      div.className = 'bg-slate-950 p-3 rounded-xl border border-slate-800/80 space-y-3';
       div.innerHTML = `
-        <span class="text-xs font-medium text-slate-300 truncate">${item}</span>
-        <div class="flex items-center gap-1.5 shrink-0">
-          <button type="button" onclick="setStatus('${item}', 'CONFORME', this)" class="btn-ck text-[10px] px-2.5 py-1 rounded-lg font-bold bg-emerald-600 text-white border border-emerald-500">OK</button>
-          <button type="button" onclick="setStatus('${item}', 'AVARIA/OBS', this)" class="btn-ck text-[10px] px-2.5 py-1 rounded-lg font-bold bg-slate-800 text-slate-400 border border-slate-700">Obs</button>
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-xs font-medium text-slate-300 truncate">${item}</span>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button type="button" onclick="setStatusItem('${itemId}', 'CONFORME', this)" class="btn-ck-${itemId} text-[10px] px-2.5 py-1 rounded-lg font-bold bg-emerald-600 text-white border border-emerald-500">OK</button>
+            <button type="button" onclick="setStatusItem('${itemId}', 'AVARIA/OBS', this)" class="btn-ck-${itemId} text-[10px] px-2.5 py-1 rounded-lg font-bold bg-slate-800 text-slate-400 border border-slate-700">Obs / Avaria</button>
+          </div>
+        </div>
+
+        <!-- Módulo Expansível de Observação + Foto Opcional -->
+        <div id="box-obs-${itemId}" class="hidden space-y-2 pt-2 border-t border-slate-800/60">
+          <input type="text" placeholder="Digite a observação do item (ex: risco leve, ruído)..." onchange="atualizarObsItem('${itemId}', this.value)" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white focus:outline-none">
+          
+          <div class="flex items-center gap-3">
+            <div class="relative bg-slate-900 border border-dashed border-slate-700 rounded-lg px-3 py-2 text-center flex-grow cursor-pointer flex items-center justify-center gap-2">
+              <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h0.93a2 2 0 001.664-.89l0.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l0.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
+              <span id="label-foto-${itemId}" class="text-[11px] text-slate-400 font-medium">Foto do Item (Opcional)</span>
+              <input type="file" accept="image/*" capture="environment" onchange="capturarFotoItem(event, '${itemId}')" class="absolute inset-0 opacity-0 cursor-pointer">
+            </div>
+            <div id="preview-foto-${itemId}" class="w-10 h-10 bg-slate-900 border border-slate-800 rounded-lg hidden overflow-hidden shrink-0"></div>
+          </div>
         </div>
       `;
       checklistContainer.appendChild(div);
     });
 
-    function setStatus(item, status, btn) {
-      dadosChecklist[item] = status;
+    function setStatusItem(id, status, btn) {
+      dadosChecklist[id].status = status;
       const parent = btn.parentElement;
-      const buttons = parent.querySelectorAll('.btn-ck');
+      const buttons = parent.querySelectorAll(`.btn-ck-${id}`);
+      const boxObs = document.getElementById(`box-obs-${id}`);
       
       buttons.forEach(b => {
-        b.className = 'btn-ck text-[10px] px-2.5 py-1 rounded-lg font-bold bg-slate-800 text-slate-400 border border-slate-700';
+        b.className = `btn-ck-${id} text-[10px] px-2.5 py-1 rounded-lg font-bold bg-slate-800 text-slate-400 border border-slate-700`;
       });
 
       if (status === 'CONFORME') {
-        btn.className = 'btn-ck text-[10px] px-2.5 py-1 rounded-lg font-bold bg-emerald-600 text-white border border-emerald-500';
+        btn.className = `btn-ck-${id} text-[10px] px-2.5 py-1 rounded-lg font-bold bg-emerald-600 text-white border border-emerald-500`;
+        boxObs.classList.add('hidden');
       } else {
-        btn.className = 'btn-ck text-[10px] px-2.5 py-1 rounded-lg font-bold bg-amber-600 text-white border border-amber-500';
+        btn.className = `btn-ck-${id} text-[10px] px-2.5 py-1 rounded-lg font-bold bg-amber-600 text-white border border-amber-500`;
+        boxObs.classList.remove('hidden');
       }
     }
 
-    // Renderizar Slots de Fotos
-    const gridFotos = document.getElementById('grid-fotos');
-    fotosRequeridas.forEach(item => {
+    function atualizarObsItem(id, val) {
+      dadosChecklist[id].obs = val;
+    }
+
+    function capturarFotoItem(event, id) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          dadosChecklist[id].foto = e.target.result;
+          const label = document.getElementById(`label-foto-${id}`);
+          const prev = document.getElementById(`preview-foto-${id}`);
+          label.innerText = "Foto Anexada ✔";
+          label.classList.add("text-emerald-400");
+          prev.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+          prev.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Renderizar Slots de Fotos Padrão
+    const gridPadrao = document.getElementById('grid-fotos-padrao');
+    fotosPadrao.forEach(item => {
       const card = document.createElement('div');
       card.className = 'bg-slate-950 border border-slate-800 rounded-xl p-2 flex flex-col gap-1.5';
       card.innerHTML = `
         <span class="text-[10px] font-bold text-slate-400 uppercase truncate">${item.label}</span>
         <div class="relative h-28 bg-slate-900 rounded-lg border border-dashed border-slate-800 flex flex-col items-center justify-center overflow-hidden" id="preview-${item.id}">
-          <svg class="w-5 h-5 text-slate-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h0.93a2 2 0 001.664-.89l0.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l0.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-          </svg>
+          <svg class="w-5 h-5 text-slate-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h0.93a2 2 0 001.664-.89l0.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l0.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
           <span class="text-[10px] text-slate-500">Capturar</span>
-          <input type="file" accept="image/*" capture="environment" onchange="capturarFoto(event, '${item.id}')" class="absolute inset-0 opacity-0 cursor-pointer">
+          <input type="file" accept="image/*" capture="environment" onchange="capturarFotoPadrao(event, '${item.id}')" class="absolute inset-0 opacity-0 cursor-pointer">
         </div>
       `;
-      gridFotos.appendChild(card);
+      gridPadrao.appendChild(card);
     });
 
-    function capturarFoto(event, id) {
+    function capturarFotoPadrao(event, id) {
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-          dadosFotos[id] = e.target.result;
+          dadosFotosPadrao[id] = e.target.result;
           const container = document.getElementById(`preview-${id}`);
           container.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
         };
@@ -261,7 +314,60 @@
       }
     }
 
-    // Função para Gerar o PDF Estruturado
+    // Função de Adicionar Fotos Extras Dinâmicas
+    let contadorExtra = 0;
+    function adicionarFotoExtra() {
+      contadorExtra++;
+      const extraId = `extra_${contadorExtra}_${Date.now()}`;
+      const objExtra = { id: extraId, foto: null, obs: '' };
+      fotosExtrasArray.push(objExtra);
+
+      const container = document.getElementById('container-fotos-extras');
+      const card = document.createElement('div');
+      card.id = `card-extra-${extraId}`;
+      card.className = 'bg-slate-950 border border-slate-800 rounded-xl p-3 flex flex-col gap-2 relative';
+      card.innerHTML = `
+        <button type="button" onclick="removerFotoExtra('${extraId}')" class="absolute top-2 right-2 bg-red-600/80 hover:bg-red-600 text-white rounded-full p-1 text-xs z-10">✕</button>
+        <span class="text-[10px] font-bold text-slate-400 uppercase">Foto Adicional #${contadorExtra}</span>
+        
+        <div class="relative h-32 bg-slate-900 rounded-lg border border-dashed border-slate-800 flex flex-col items-center justify-center overflow-hidden" id="preview-${extraId}">
+          <svg class="w-6 h-6 text-slate-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h0.93a2 2 0 001.664-.89l0.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l0.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path></svg>
+          <span class="text-xs text-slate-500">Toque para tirar foto</span>
+          <input type="file" accept="image/*" capture="environment" onchange="capturarFotoExtra(event, '${extraId}')" class="absolute inset-0 opacity-0 cursor-pointer">
+        </div>
+
+        <input type="text" placeholder="Observação desta foto..." onchange="atualizarObsExtra('${extraId}', this.value)" class="w-full bg-slate-900 border border-slate-800 rounded-lg p-2 text-xs text-white focus:outline-none">
+      `;
+      container.appendChild(card);
+    }
+
+    function removerFotoExtra(id) {
+      const idx = fotosExtrasArray.findIndex(item => item.id === id);
+      if (idx !== -1) fotosExtrasArray.splice(idx, 1);
+      const card = document.getElementById(`card-extra-${id}`);
+      if (card) card.remove();
+    }
+
+    function capturarFotoExtra(event, id) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const item = fotosExtrasArray.find(x => x.id === id);
+          if (item) item.foto = e.target.result;
+          const container = document.getElementById(`preview-${id}`);
+          container.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function atualizarObsExtra(id, val) {
+      const item = fotosExtrasArray.find(x => x.id === id);
+      if (item) item.obs = val;
+    }
+
+    // Geração do PDF
     function gerarPDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
@@ -278,7 +384,7 @@
       const observacoes = document.getElementById('observacoes').value || 'Sem observações registradas no ato da avaliação.';
 
       // Cabeçalho
-      doc.setFillColor(15, 23, 42); // slate-900
+      doc.setFillColor(15, 23, 42);
       doc.rect(0, 0, 210, 28, 'F');
       
       doc.setTextColor(255, 255, 255);
@@ -309,18 +415,23 @@
         styles: { fontSize: 7.5, cellPadding: 2.5 }
       });
 
-      // Tabela 2: Resumo de Status dos Itens
-      const checklistTable = Object.keys(dadosChecklist).map(k => [k, dadosChecklist[k]]);
+      // Tabela 2: Resumo do Checklist com Observações
+      const checklistTable = Object.keys(dadosChecklist).map(k => {
+        const item = dadosChecklist[k];
+        const statusTexto = item.status === 'CONFORME' ? 'CONFORME' : `AVARIA / OBS: ${item.obs || 'Ver anexo'}`;
+        return [item.nome, statusTexto];
+      });
+
       doc.autoTable({
         startY: doc.lastAutoTable.finalY + 4,
-        head: [['Item Avaliado / Inspeção', 'Status']],
+        head: [['Item Avaliado / Inspeção', 'Status / Observação Específica']],
         body: checklistTable,
         theme: 'striped',
         headStyles: { fillColor: [30, 41, 59], fontStyle: 'bold' },
         styles: { fontSize: 7.5, cellPadding: 2 },
         didParseCell: function(data) {
           if (data.column.index === 1) {
-            if (data.cell.raw === 'CONFORME') data.cell.styles.textColor = [16, 185, 129];
+            if (data.cell.raw.startsWith('CONFORME')) data.cell.styles.textColor = [16, 185, 129];
             else data.cell.styles.textColor = [245, 158, 11];
             data.cell.styles.fontStyle = 'bold';
           }
@@ -339,53 +450,85 @@
       const lines = doc.splitTextToSize(observacoes, 182);
       doc.text(lines, 14, currentY + 4);
 
-      // Página 2: Módulo de Fotos
-      doc.addPage();
-      
-      doc.setFillColor(15, 23, 42);
-      doc.rect(0, 0, 210, 14, 'F');
-      doc.setTextColor(255, 255, 255);
-      doc.setFontSize(9);
-      doc.setFont('helvetica', 'bold');
-      doc.text(`ANEXO FOTOGRÁFICO DE AVALIAÇÃO - PLACA: ${placa}`, 14, 9);
+      // --- MÓDULO FOTOGRÁFICO INTELIGENTE ---
+      // Montar lista com todas as fotos presentes
+      const fotosParaPDF = [];
 
-      let x = 14;
-      let y = 20;
-      const imgWidth = 58;
-      const imgHeight = 42;
-
-      fotosRequeridas.forEach((item, idx) => {
-        const imgData = dadosFotos[item.id];
-
-        // Moldura do Card
-        doc.setDrawColor(220, 220, 220);
-        doc.rect(x, y, imgWidth, imgHeight + 6);
-
-        if (imgData) {
-          doc.addImage(imgData, 'JPEG', x + 1, y + 1, imgWidth - 2, imgHeight - 2);
-        } else {
-          doc.setFillColor(245, 245, 245);
-          doc.rect(x + 1, y + 1, imgWidth - 2, imgHeight - 2, 'F');
-          doc.setFontSize(7);
-          doc.setTextColor(160, 160, 160);
-          doc.text("Sem Registro", x + (imgWidth/2), y + (imgHeight/2), { align: 'center' });
-        }
-
-        // Legenda abaixo da foto
-        doc.setFillColor(30, 41, 59);
-        doc.rect(x, y + imgHeight, imgWidth, 6, 'F');
-        doc.setTextColor(255, 255, 255);
-        doc.setFontSize(6.5);
-        doc.setFont('helvetica', 'bold');
-        doc.text(item.label.toUpperCase(), x + 2, y + imgHeight + 4);
-
-        // Grid com 3 fotos por linha
-        x += imgWidth + 4;
-        if ((idx + 1) % 3 === 0) {
-          x = 14;
-          y += imgHeight + 10;
+      // 1. Fotos padrão que foram capturadas
+      fotosPadrao.forEach(item => {
+        if (dadosFotosPadrao[item.id]) {
+          fotosParaPDF.push({ titulo: item.label, foto: dadosFotosPadrao[item.id], obs: '' });
         }
       });
+
+      // 2. Fotos do checklist (avarias específicas)
+      Object.keys(dadosChecklist).forEach(k => {
+        const item = dadosChecklist[k];
+        if (item.foto) {
+          fotosParaPDF.push({ titulo: `AVARIA: ${item.nome}`, foto: item.foto, obs: item.obs || 'Sem detalhes' });
+        }
+      });
+
+      // 3. Fotos extras
+      fotosExtrasArray.forEach((item, idx) => {
+        if (item.foto) {
+          fotosParaPDF.push({ titulo: `FOTO EXTRA #${idx + 1}`, foto: item.foto, obs: item.obs || 'Sem detalhes' });
+        }
+      });
+
+      if (fotosParaPDF.length > 0) {
+        doc.addPage();
+        
+        doc.setFillColor(15, 23, 42);
+        doc.rect(0, 0, 210, 14, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(9);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`REGISTROS FOTOGRÁFICOS DO VEÍCULO - PLACA: ${placa}`, 14, 9);
+
+        let x = 14;
+        let y = 20;
+        const imgWidth = 58;
+        const imgHeight = 42;
+
+        fotosParaPDF.forEach((item, idx) => {
+          // Moldura do Card
+          doc.setDrawColor(220, 220, 220);
+          doc.rect(x, y, imgWidth, imgHeight + (item.obs ? 10 : 5));
+
+          doc.addImage(item.foto, 'JPEG', x + 1, y + 1, imgWidth - 2, imgHeight - 2);
+
+          // Header da Foto
+          doc.setFillColor(30, 41, 59);
+          doc.rect(x, y + imgHeight, imgWidth, 5, 'F');
+          doc.setTextColor(255, 255, 255);
+          doc.setFontSize(6);
+          doc.setFont('helvetica', 'bold');
+          doc.text(item.titulo.toUpperCase(), x + 2, y + imgHeight + 3.5);
+
+          // Texto de Observação
+          if (item.obs) {
+            doc.setTextColor(60, 60, 60);
+            doc.setFontSize(5.5);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`Obs: ${item.obs}`, x + 2, y + imgHeight + 8.5, { maxWidth: imgWidth - 4 });
+          }
+
+          // Ajuste de Grid e Páginas
+          x += imgWidth + 4;
+          if ((idx + 1) % 3 === 0) {
+            x = 14;
+            y += imgHeight + (item.obs ? 15 : 10);
+          }
+
+          // Se estourar a página, add outra
+          if (y > 250 && idx < fotosParaPDF.length - 1) {
+            doc.addPage();
+            y = 20;
+            x = 14;
+          }
+        });
+      }
 
       // Salvar PDF
       doc.save(`Avaliacao_Veicular_${placa}.pdf`);
