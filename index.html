@@ -3,206 +3,377 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sistema de Laudo Cautelar Automotivo</title>
-
-  <!-- Tailwind CSS para Estilização Completa -->
+  <title>Sistema Profissional de Vistoria Cautelar</title>
+  
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
-  <!-- html2pdf.js para Geração Automática do PDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-  <style>
-    /* Estilos específicos para a impressão/exportação em PDF */
-    @media print {
-      .no-print { display: none !important; }
-      .print-only { display: block !important; }
-      body { background: white; padding: 0; }
-    }
-  </style>
+  <!-- jsPDF e jsPDF-AutoTable para geração profissional de PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 </head>
-<body class="bg-gray-100 min-h-screen text-gray-800 font-sans pb-12">
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans pb-24">
 
-  <!-- Cabeçalho / Navbar -->
-  <header class="bg-slate-900 text-white p-4 shadow-md no-print">
-    <div class="max-w-4xl mx-auto flex justify-between items-center">
-      <h1 class="text-xl font-bold tracking-wide">Vistoria Cautelar Pro</h1>
-      <span class="text-xs bg-slate-800 text-slate-300 px-3 py-1 rounded-full border border-slate-700">App Web</span>
+  <!-- Header -->
+  <header class="bg-slate-950 border-b border-slate-800 p-4 sticky top-0 z-50">
+    <div class="max-w-5xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-black text-white">V</div>
+        <h1 class="text-lg font-bold tracking-wide text-white">AUTOLAUDO <span class="text-blue-500 text-xs font-normal">PRO</span></h1>
+      </div>
+      <span class="text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full">Modo Vistoriador</span>
     </div>
   </header>
 
-  <main class="max-w-4xl mx-auto mt-6 p-4">
+  <main class="max-w-5xl mx-auto p-4 space-y-6 mt-4">
 
-    <!-- Formulário Principal -->
-    <div class="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-200" id="relatorio-conteudo">
+    <!-- 1. Dados do Veículo -->
+    <section class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-xl">
+      <h2 class="text-base font-bold text-blue-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+        <span class="bg-blue-500/20 text-blue-400 w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
+        Identificação do Veículo
+      </h2>
       
-      <!-- Cabeçalho do Laudo -->
-      <div class="border-b-2 border-slate-800 pb-4 mb-6 flex justify-between items-end">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <div>
-          <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tight">LAUDO DE VISTORIA CAUTELAR</h2>
-          <p class="text-sm text-gray-500">Relatório de inspeção de integridade veicular</p>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Marca</label>
+          <select id="marca" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-blue-500 focus:outline-none">
+            <option value="">Selecione a marca...</option>
+            <option value="Volkswagen">Volkswagen</option>
+            <option value="Chevrolet">Chevrolet</option>
+            <option value="Fiat">Fiat</option>
+            <option value="Toyota">Toyota</option>
+            <option value="Honda">Honda</option>
+            <option value="Hyundai">Hyundai</option>
+            <option value="Ford">Ford</option>
+            <option value="Renault">Renault</option>
+            <option value="Jeep">Jeep</option>
+            <option value="Nissan">Nissan</option>
+            <option value="BMW">BMW</option>
+            <option value="Mercedes-Benz">Mercedes-Benz</option>
+            <option value="Audi">Audi</option>
+            <option value="Outra">Outra</option>
+          </select>
         </div>
-        <div class="text-right text-xs text-gray-500">
-          <p><strong>Data:</strong> <span id="data-atual">--/--/----</span></p>
-          <p><strong>Código:</strong> #<span id="codigo-laudo">0000</span></p>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Modelo</label>
+          <input type="text" id="modelo" placeholder="Ex: Corolla XEi 2.0" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-blue-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Placa</label>
+          <input type="text" id="placa" placeholder="ABC-1D23" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white uppercase focus:border-blue-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Ano / Modelo</label>
+          <input type="text" id="ano" placeholder="2022/2023" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-blue-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Cor</label>
+          <input type="text" id="cor" placeholder="Prata" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-blue-500 focus:outline-none">
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Quilometragem (KM)</label>
+          <input type="text" id="km" placeholder="45.000" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-blue-500 focus:outline-none">
         </div>
       </div>
+    </section>
 
-      <!-- Seção: Dados do Veículo -->
-      <section class="mb-8">
-        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-700 mb-3 bg-gray-100 p-2 rounded border-l-4 border-slate-800">
-          1. Dados do Veículo
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Marca / Modelo</label>
-            <input type="text" id="veiculo" placeholder="Ex: Toyota Corolla 2.0" class="w-full p-2 text-sm border rounded focus:ring-2 focus:ring-slate-800 focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Placa</label>
-            <input type="text" id="placa" placeholder="Ex: ABC-1D23" class="w-full p-2 text-sm border rounded uppercase focus:ring-2 focus:ring-slate-800 focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Ano / Modelo</label>
-            <input type="text" id="ano" placeholder="Ex: 2021/2022" class="w-full p-2 text-sm border rounded focus:ring-2 focus:ring-slate-800 focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Cor</label>
-            <input type="text" id="cor" placeholder="Ex: Prata" class="w-full p-2 text-sm border rounded focus:ring-2 focus:ring-slate-800 focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Quilometragem (KM)</label>
-            <input type="text" id="km" placeholder="Ex: 45.000" class="w-full p-2 text-sm border rounded focus:ring-2 focus:ring-slate-800 focus:outline-none">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Avaliador Responsável</label>
-            <input type="text" id="avaliador" placeholder="Seu Nome" class="w-full p-2 text-sm border rounded focus:ring-2 focus:ring-slate-800 focus:outline-none">
-          </div>
-        </div>
-      </section>
+    <!-- 2. Checklist de Inspeção Técnica -->
+    <section class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-xl">
+      <h2 class="text-base font-bold text-blue-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+        <span class="bg-blue-500/20 text-blue-400 w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
+        Avaliação dos Itens
+      </h2>
 
-      <!-- Seção: Captura e Registro de Fotos -->
-      <section class="mb-8">
-        <div class="flex justify-between items-center mb-4">
-          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-700 bg-gray-100 p-2 rounded border-l-4 border-slate-800 flex-grow">
-            2. Registros Fotográficos e Observações
-          </h3>
-        </div>
-
-        <!-- Botão para Acionar Câmera/Upload -->
-        <div class="no-print mb-6">
-          <label class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-lg cursor-pointer bg-slate-50 hover:bg-slate-100 transition">
-            <div class="flex flex-col items-center justify-center pt-5 pb-6">
-              <svg class="w-8 h-8 mb-2 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h0.93a2 2 0 001.664-.89l0.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l0.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-              </svg>
-              <p class="text-sm font-semibold text-slate-700">Tirar Foto ou Selecionar do Arquivo</p>
-              <p class="text-xs text-gray-500">Toque aqui para usar a câmera do celular</p>
-            </div>
-            <!-- Aceita imagens e abre a câmera em dispositivos móveis -->
-            <input type="file" accept="image/*" capture="environment" id="camera-input" class="hidden">
-          </label>
-        </div>
-
-        <!-- Feed de Fotos Adicionadas -->
-        <div id="galeria-fotos" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <!-- As fotos adicionadas aparecerão aqui via JS -->
-        </div>
-      </section>
-
-      <!-- Parecer Final -->
-      <section class="mb-6">
-        <h3 class="text-sm font-bold uppercase tracking-wider text-slate-700 mb-3 bg-gray-100 p-2 rounded border-l-4 border-slate-800">
-          3. Parecer Técnico Final
-        </h3>
-        <textarea id="parecer" rows="3" placeholder="Digite as conclusões finais da vistoria..." class="w-full p-2 text-sm border rounded focus:ring-2 focus:ring-slate-800 focus:outline-none"></textarea>
-      </section>
-
-      <!-- Rodapé do PDF -->
-      <div class="mt-12 pt-6 border-t border-gray-200 text-center text-xs text-gray-400">
-        <p>Documento gerado digitalmente pelo Sistema de Vistoria Cautelar.</p>
+      <div class="space-y-3" id="checklist-container">
+        <!-- Itens injetados via JS -->
       </div>
-    </div>
+    </section>
 
-    <!-- Barra Ações (Fixa na Tela Mobile) -->
-    <div class="no-print fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 shadow-lg flex justify-center gap-4">
-      <button onclick="gerarPDF()" class="w-full max-w-md bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-6 rounded-lg shadow transition flex items-center justify-center gap-2">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-        </svg>
-        Gerar Laudo em PDF
-      </button>
-    </div>
+    <!-- 3. Fotos Guiadas (Obrigatórias) -->
+    <section class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-xl">
+      <h2 class="text-base font-bold text-blue-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+        <span class="bg-blue-500/20 text-blue-400 w-6 h-6 rounded-full flex items-center justify-center text-xs">3</span>
+        Registros Fotográficos Obrigatórios
+      </h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="grid-fotos-guiadas">
+        <!-- Slots de fotos criados via JS -->
+      </div>
+    </section>
+
+    <!-- 4. Parecer Técnico -->
+    <section class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-xl">
+      <h2 class="text-base font-bold text-blue-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+        <span class="bg-blue-500/20 text-blue-400 w-6 h-6 rounded-full flex items-center justify-center text-xs">4</span>
+        Parecer do Vistoriador
+      </h2>
+
+      <div class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Resultado Final</label>
+          <select id="resultado-laudo" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm font-bold text-white focus:outline-none">
+            <option value="APROVADO" class="text-emerald-400">APROVADO</option>
+            <option value="APROVADO COM APONTAMENTO" class="text-amber-400">APROVADO COM APONTAMENTO</option>
+            <option value="REPROVADO" class="text-red-400">REPROVADO</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">Observações do Laudo</label>
+          <textarea id="observacoes-finais" rows="3" placeholder="Insira o parecer completo sobre sinistros, leilões, repintura ou avarias encontradas..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-sm text-white focus:border-blue-500 focus:outline-none"></textarea>
+        </div>
+      </div>
+    </section>
 
   </main>
 
+  <!-- Barra de Ação Flutuante -->
+  <div class="fixed bottom-0 left-0 right-0 bg-slate-950/90 backdrop-blur border-t border-slate-800 p-4 z-40">
+    <div class="max-w-5xl mx-auto flex justify-end">
+      <button onclick="gerarPDFProfissional()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        Gerar Laudo Profissional em PDF
+      </button>
+    </div>
+  </div>
+
   <script>
-    // Inicializar data e código aleatório
-    document.getElementById('data-atual').innerText = new Date().toLocaleDateString('pt-BR');
-    document.getElementById('codigo-laudo').innerText = Math.floor(1000 + Math.random() * 9000);
+    // Configuração das fotos específicas exigidas
+    const fotosEspecificas = [
+      { id: 'foto-num-motor', label: 'Número do Motor' },
+      { id: 'foto-chassi', label: 'Gravação do Chassi' },
+      { id: 'foto-longarina-diant', label: 'Longarinas Dianteiras' },
+      { id: 'foto-vidros', label: 'Etiquetas / Vidros' },
+      { id: 'foto-frente', label: 'Frente do Veículo' },
+      { id: 'foto-traseira', label: 'Traseira do Veículo' },
+      { id: 'foto-lat-direita', label: 'Lateral Direita' },
+      { id: 'foto-lat-esquerda', label: 'Lateral Esquerda' },
+      { id: 'foto-painel', label: 'Painel / Odômetro' }
+    ];
 
-    const cameraInput = document.getElementById('camera-input');
-    const galeriaFotos = document.getElementById('galeria-fotos');
+    // Checklist dos itens do veículo
+    const itensChecklist = [
+      'Estrutura / Longarinas',
+      'Número do Motor e Chassi',
+      'Pintura e Funilaria',
+      'Pneus e Rodas',
+      'Vidros e Retrovisores',
+      'Parte Elétrica / Painel'
+    ];
 
-    // Escutar mudança no input de arquivo/câmera
-    cameraInput.addEventListener('change', function(e) {
-      const file = e.target.files[0];
+    const dadosFotos = {};
+    const dadosChecklist = {};
+
+    // Renderizar Checklist
+    const checklistContainer = document.getElementById('checklist-container');
+    itensChecklist.forEach((item, index) => {
+      dadosChecklist[item] = { status: 'APROVADO', obs: '' };
+      
+      const div = document.createElement('div');
+      div.className = 'flex flex-col sm:flex-row sm:items-center justify-between bg-slate-900 p-3 rounded-lg border border-slate-700/50 gap-3';
+      div.innerHTML = `
+        <span class="text-sm font-medium text-slate-200">${item}</span>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="setStatus('${item}', 'APROVADO', this)" class="btn-status text-xs px-3 py-1.5 rounded-md font-bold bg-emerald-600 text-white border border-emerald-500">OK</button>
+          <button type="button" onclick="setStatus('${item}', 'APONTAMENTO', this)" class="btn-status text-xs px-3 py-1.5 rounded-md font-bold bg-slate-800 text-slate-400 border border-slate-700">Obs</button>
+          <button type="button" onclick="setStatus('${item}', 'REPROVADO', this)" class="btn-status text-xs px-3 py-1.5 rounded-md font-bold bg-slate-800 text-slate-400 border border-slate-700">Avaria</button>
+        </div>
+      `;
+      checklistContainer.appendChild(div);
+    });
+
+    function setStatus(item, status, btn) {
+      dadosChecklist[item].status = status;
+      const parent = btn.parentElement;
+      const buttons = parent.querySelectorAll('.btn-status');
+      
+      buttons.forEach(b => {
+        b.className = 'btn-status text-xs px-3 py-1.5 rounded-md font-bold bg-slate-800 text-slate-400 border border-slate-700';
+      });
+
+      if (status === 'APROVADO') {
+        btn.className = 'btn-status text-xs px-3 py-1.5 rounded-md font-bold bg-emerald-600 text-white border border-emerald-500';
+      } else if (status === 'APONTAMENTO') {
+        btn.className = 'btn-status text-xs px-3 py-1.5 rounded-md font-bold bg-amber-600 text-white border border-amber-500';
+      } else {
+        btn.className = 'btn-status text-xs px-3 py-1.5 rounded-md font-bold bg-red-600 text-white border border-red-500';
+      }
+    }
+
+    // Renderizar Slots de Fotos
+    const gridFotos = document.getElementById('grid-fotos-guiadas');
+    fotosEspecificas.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'bg-slate-900 border border-slate-700 rounded-lg p-3 flex flex-col gap-2';
+      card.innerHTML = `
+        <span class="text-xs font-bold text-slate-300 uppercase">${item.label}</span>
+        <div class="relative h-36 bg-slate-950 rounded border border-dashed border-slate-700 flex flex-col items-center justify-center overflow-hidden" id="preview-${item.id}">
+          <svg class="w-6 h-6 text-slate-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h0.93a2 2 0 001.664-.89l0.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l0.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+          </svg>
+          <span class="text-xs text-slate-500">Tirar / Carregar Foto</span>
+          <input type="file" accept="image/*" capture="environment" onchange="carregarFoto(event, '${item.id}')" class="absolute inset-0 opacity-0 cursor-pointer">
+        </div>
+        <input type="text" id="obs-${item.id}" placeholder="Observação técnica..." class="w-full bg-slate-800 border border-slate-700 rounded p-1.5 text-xs text-white focus:outline-none">
+      `;
+      gridFotos.appendChild(card);
+    });
+
+    function carregarFoto(event, id) {
+      const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
-        reader.onload = function(event) {
-          adicionarFotoNaGaleria(event.target.result);
+        reader.onload = function(e) {
+          dadosFotos[id] = e.target.result;
+          const container = document.getElementById(`preview-${id}`);
+          container.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
         };
         reader.readAsDataURL(file);
       }
-      // Limpa input para permitir tirar outra foto do mesmo tipo
-      this.value = '';
-    });
-
-    // Função para criar o card da foto + observações
-    function adicionarFotoNaGaleria(imageSrc) {
-      const cardId = 'foto-' + Date.now();
-      const itemHTML = `
-        <div id="${cardId}" class="bg-gray-50 border border-gray-200 rounded-lg p-3 relative flex flex-col gap-3">
-          <!-- Botão excluir foto -->
-          <button onclick="removerFoto('${cardId}')" class="no-print absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1.5 shadow transition" title="Excluir Foto">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-          
-          <img src="${imageSrc}" class="w-full h-48 object-cover rounded border border-gray-300">
-          
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 mb-1">Observações do Item / Avaria:</label>
-            <textarea placeholder="Ex: Detalhe de risco na pintura, pneu careca, etc." class="w-full p-2 text-xs border rounded focus:ring-1 focus:ring-slate-800 focus:outline-none bg-white" rows="2"></textarea>
-          </div>
-        </div>
-      `;
-      galeriaFotos.insertAdjacentHTML('beforeend', itemHTML);
     }
 
-    // Função para remover um card de foto
-    function removerFoto(id) {
-      const el = document.getElementById(id);
-      if (el) el.remove();
-    }
+    // Função de Geração Profissional do PDF usando jsPDF
+    function gerarPDFProfissional() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
 
-    // Função para gerar o PDF formatado
-    function gerarPDF() {
-      const elemento = document.getElementById('relatorio-conteudo');
-      const placa = document.getElementById('placa').value.toUpperCase() || 'VEICULO';
+      const marca = document.getElementById('marca').value || 'N/A';
+      const modelo = document.getElementById('modelo').value || 'N/A';
+      const placa = (document.getElementById('placa').value || 'SEM-PLACA').toUpperCase();
+      const ano = document.getElementById('ano').value || 'N/A';
+      const cor = document.getElementById('cor').value || 'N/A';
+      const km = document.getElementById('km').value || 'N/A';
+      const resultado = document.getElementById('resultado-laudo').value;
+      const parecer = document.getElementById('observacoes-finais').value || 'Sem observações adicionais.';
 
-      // Configurações do html2pdf
-      const opcoes = {
-        margin:       [10, 10, 10, 10],
-        filename:     `Laudo_Cautelar_${placa}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true },
-        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-      };
+      // Header Corporativo
+      doc.setFillColor(15, 23, 42); // slate-900
+      doc.rect(0, 0, 210, 30, 'F');
+      
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(16);
+      doc.setFont('helvetica', 'bold');
+      doc.text("LAUDO DE VISTORIA CAUTELAR", 14, 15);
+      
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}  |  Laudo Nº: #${Math.floor(100000 + Math.random() * 900000)}`, 14, 22);
 
-      // Executa a conversão
-      html2pdf().set(opcoes).from(elemento).save();
+      // Status do Resultado
+      if(resultado === 'APROVADO') doc.setTextColor(16, 185, 129);
+      else if(resultado === 'APROVADO COM APONTAMENTO') doc.setTextColor(245, 158, 11);
+      else doc.setTextColor(239, 68, 68);
+
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text(resultado, 196, 18, { align: 'right' });
+
+      // Tabela 1: Dados do Veículo
+      doc.autoTable({
+        startY: 35,
+        head: [['Marca', 'Modelo / Versão', 'Placa', 'Ano/Mod', 'Cor', 'KM']],
+        body: [[marca, modelo, placa, ano, cor, km]],
+        theme: 'grid',
+        headStyles: { fillStyle: 'F', fillColor: [30, 41, 59], textColor: [255, 255, 255], fontStyle: 'bold' },
+        styles: { fontSize: 8, cellPadding: 3 }
+      });
+
+      // Tabela 2: Checklist de Itens
+      const checklistArray = Object.keys(dadosChecklist).map(key => [key, dadosChecklist[key].status]);
+      doc.autoTable({
+        startY: doc.lastAutoTable.finalY + 5,
+        head: [['Item Avaliado', 'Status de Integridade']],
+        body: checklistArray,
+        theme: 'striped',
+        headStyles: { fillColor: [30, 41, 59], fontStyle: 'bold' },
+        styles: { fontSize: 8, cellPadding: 2.5 },
+        didParseCell: function(data) {
+          if (data.column.index === 1) {
+            if (data.cell.raw === 'APROVADO') data.cell.styles.textColor = [16, 185, 129];
+            else if (data.cell.raw === 'APONTAMENTO') data.cell.styles.textColor = [245, 158, 11];
+            else data.cell.styles.textColor = [239, 68, 68];
+            data.cell.styles.fontStyle = 'bold';
+          }
+        }
+      });
+
+      // Parecer Técnico
+      let currentY = doc.lastAutoTable.finalY + 8;
+      doc.setTextColor(30, 41, 59);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.text("PARECER TÉCNICO FINAL:", 14, currentY);
+      
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      const lines = doc.splitTextToSize(parecer, 180);
+      doc.text(lines, 14, currentY + 5);
+
+      // Nova Página para as Fotos
+      doc.addPage();
+      
+      // Header da Segunda Página
+      doc.setFillColor(15, 23, 42);
+      doc.rect(0, 0, 210, 15, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'bold');
+      doc.text(`REGISTROS FOTOGRÁFICOS DO VEÍCULO - PLACA: ${placa}`, 14, 10);
+
+      let x = 14;
+      let y = 25;
+      const imgWidth = 58;
+      const imgHeight = 42;
+
+      fotosEspecificas.forEach((item, idx) => {
+        const imgData = dadosFotos[item.id];
+        const obs = document.getElementById(`obs-${item.id}`).value || 'Sem apontamentos';
+
+        // Desenhar moldura do card de foto
+        doc.setDrawColor(200, 200, 200);
+        doc.rect(x, y, imgWidth, imgHeight + 12);
+
+        if (imgData) {
+          doc.addImage(imgData, 'JPEG', x + 1, y + 1, imgWidth - 2, imgHeight - 2);
+        } else {
+          doc.setFillColor(240, 240, 240);
+          doc.rect(x + 1, y + 1, imgWidth - 2, imgHeight - 2, 'F');
+          doc.setFontSize(7);
+          doc.setTextColor(150, 150, 150);
+          doc.text("Foto Não Registrada", x + (imgWidth/2), y + (imgHeight/2), { align: 'center' });
+        }
+
+        // Legenda e observação abaixo da foto
+        doc.setFillColor(30, 41, 59);
+        doc.rect(x, y + imgHeight, imgWidth, 5, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(6.5);
+        doc.setFont('helvetica', 'bold');
+        doc.text(item.label.toUpperCase(), x + 2, y + imgHeight + 3.5);
+
+        doc.setTextColor(50, 50, 50);
+        doc.setFontSize(6);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Obs: ${obs}`, x + 2, y + imgHeight + 9, { maxWidth: imgWidth - 4 });
+
+        // Avançar para a próxima posição na grade (3 fotos por linha)
+        x += imgWidth + 4;
+        if ((idx + 1) % 3 === 0) {
+          x = 14;
+          y += imgHeight + 18;
+        }
+      });
+
+      // Salvar arquivo
+      doc.save(`Laudo_Cautelar_${placa}.pdf`);
     }
   </script>
 </body>
